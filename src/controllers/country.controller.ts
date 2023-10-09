@@ -17,7 +17,6 @@ const getAllCountries = async (req: Request, res: Response) => {
       });
     }
 
-
     const responseData = apiResponse.data.data;
     return res.json({
       success: true,
@@ -30,7 +29,6 @@ const getAllCountries = async (req: Request, res: Response) => {
     return res.status(500).json({ 
       success: false,
       message: 'An error occurred while getAll data'
-
     });
   }
 };
@@ -38,10 +36,43 @@ const getAllCountries = async (req: Request, res: Response) => {
 const getOneCountry = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    
+
+    const alphRegex = /^[a-zA-Z]+$/;
+    const checkAlp = alphRegex.test(id) === false; 
+    const checkLength1 = id.length >2;
+    const checkLength2 = id.length === 1;
+    const msgCheckLength = 'Country code has to have 2 character!';
+    const msgCheckAlp = 'Country code must be in Alphabet!';
+
+    if((checkAlp && checkLength1) || (checkLength2 && checkAlp)) {
+      return res.json({
+        success: false,
+        message: [
+          msgCheckAlp,
+          msgCheckLength
+        ]
+      });
+    }
+    if(checkLength1 || checkLength2) {
+      return res.json({
+        success: false,
+        message: [
+          msgCheckLength
+        ]
+      });
+    }
+    if (checkAlp){
+      return res.json({
+        success: false,
+        message: [
+          msgCheckAlp
+        ]
+      });
+    }
+
     const apiResponse = await axios.post(apiUrl, {
       query: findOneQuery,
-      variables: { code: id}
+      variables: { code: id && id.toUpperCase()}
     });
     if (!apiResponse) {
       return res.json({
@@ -51,9 +82,17 @@ const getOneCountry = async (req: Request, res: Response) => {
     }
 
     const responseData = apiResponse.data.data;
+
+    if(responseData.country === null){
+      return res.json({
+        success: true,
+        message: `No Country found with code ${id.toUpperCase()}`,
+        results: responseData
+      });
+    }
     return res.json({
       success: true,
-      message: `Details of a Country with code ${id}`,
+      message: `Details of a Country with code ${id.toUpperCase()}`,
       results: responseData
     });
 

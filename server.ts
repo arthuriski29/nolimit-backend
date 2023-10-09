@@ -1,11 +1,16 @@
 import express from 'express';
 import { router } from './src/routers';
+import { configDotenv } from 'dotenv';
+
+configDotenv({
+  path: '.env',
+});
 
 const server = express();
-const port = 5000;
+const PORT = process.env.PORT;
 
 server.use('/', router);
 
-server.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
+server.listen(PORT, () => {
+  console.log(`Server is running on PORT ${PORT}`);
 });
