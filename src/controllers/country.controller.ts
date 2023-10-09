@@ -2,11 +2,12 @@ import axios from 'axios';
 import { Request, Response } from 'express';
 import { findAllQuery, findOneQuery } from '../models/country.model';
 
+const apiUrl = 'https://countries.trevorblades.com/graphql';
 
 const getAllCountries = async (req: Request, res: Response) => {
   try {
 
-    const apiResponse = await axios.post('https://countries.trevorblades.com/graphql', {
+    const apiResponse = await axios.post(apiUrl, {
       query: findAllQuery,
     });
     if (!apiResponse) {
@@ -38,7 +39,7 @@ const getOneCountry = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
     
-    const apiResponse = await axios.post('https://countries.trevorblades.com/graphql', {
+    const apiResponse = await axios.post(apiUrl, {
       query: findOneQuery,
       variables: { code: id}
     });
