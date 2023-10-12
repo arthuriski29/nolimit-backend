@@ -1,5 +1,5 @@
 
-const findAllQuery = `
+export const findAllQuery = `
     query GetCountry {
       countries {
         name
@@ -9,7 +9,7 @@ const findAllQuery = `
       }
     }
   `;
-const findOneQuery = `
+export const findOneQuery = `
   query getOneCountry($code: ID!){
     country (code: $code) {
       awsRegion
@@ -26,4 +26,3 @@ const findOneQuery = `
     }
   }
 `;
-export {findAllQuery, findOneQuery};
