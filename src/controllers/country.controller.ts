@@ -1,15 +1,12 @@
-import axios from 'axios';
+// import axios from 'axios';
 import { Request, Response } from 'express';
-import { findAllQuery, findOneQuery } from '../models/country.model';
+import {findAllQuery, findOneQuery} from '../models/country.model';
+import { http } from '../helpers/api.helper';
 
-const apiUrl = 'https://countries.trevorblades.com/graphql';
-
-const getAllCountries = async (req: Request, res: Response) => {
+export const getAllCountries = async (req: Request, res: Response) => {
   try {
+    const apiResponse = await http(findAllQuery);
 
-    const apiResponse = await axios.post(apiUrl, {
-      query: findAllQuery,
-    });
     if (!apiResponse) {
       return res.json({
         success: false,
@@ -33,7 +30,7 @@ const getAllCountries = async (req: Request, res: Response) => {
   }
 };
 
-const getOneCountry = async (req: Request, res: Response) => {
+export const getOneCountry = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
 
@@ -70,10 +67,8 @@ const getOneCountry = async (req: Request, res: Response) => {
       });
     }
 
-    const apiResponse = await axios.post(apiUrl, {
-      query: findOneQuery,
-      variables: { code: id && id.toUpperCase()}
-    });
+    const apiResponse = await http(findOneQuery, { code: id && id.toUpperCase()});
+
     if (!apiResponse) {
       return res.json({
         success: false,
@@ -104,6 +99,3 @@ const getOneCountry = async (req: Request, res: Response) => {
     });
   }
 };
-
-export {getAllCountries, getOneCountry};
-
